@@ -3,7 +3,7 @@ import { test } from "node:test";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import boundedTurns from "../pi-quick-oracles.ts";
 
-function setup() {
+function setup(api = "openai-responses", compat: Record<string, boolean> = {}) {
 	const env = { review: process.env.PI_REVIEW_TOKENS, answer: process.env.PI_ANSWER_TOKENS };
 	process.env.PI_REVIEW_TOKENS = "100";
 	process.env.PI_ANSWER_TOKENS = "50";
@@ -23,7 +23,7 @@ function setup() {
 		if (value === undefined) delete process.env[key!];
 		else process.env[key!] = value;
 	}
-	const ctx = { model: { api: "openai-responses" }, abort: async () => { aborts++; } };
+	const ctx = { model: { api, compat }, abort: async () => { aborts++; } };
 	const message = (output: number, stopReason: string) => ({ role: "assistant", usage: { output }, stopReason,
 		content: [{ type: "thinking", thinking: "", thinkingSignature: "unchanged-opaque-state" }] });
 	return { prompts, message, get tools() { return tools; }, get thinking() { return thinking; }, get aborts() { return aborts; },
@@ -49,6 +49,31 @@ test("one cumulative review budget, native state unchanged, one final-answer all
 	assert.throws(() => s.request(), /finished/);
 	assert.equal(s.aborts, 1);
 	assert.equal(s.prompts.length, 1);
+});
+
+test("uses each provider's supported output-token field", () => {
+	assert.deepEqual(setup("openai-responses").request({ keep: true }), { keep: true, max_output_tokens: 100 });
+	assert.deepEqual(
+		setup("openai-responses", { supportsMaxOutputTokens: false }).request({ keep: true }),
+		{ keep: true },
+	);
+	assert.deepEqual(setup("openai-completions").request({ keep: true }), { keep: true, max_tokens: 100 });
+	assert.deepEqual(setup("openai-completions").request({ max_completion_tokens: 900 }), { max_completion_tokens: 100 });
+	assert.deepEqual(setup("anthropic-messages").request({ keep: true }), { keep: true, max_tokens: 100 });
+	assert.deepEqual(setup("google-generative-ai").request({ config: { keep: true } }), {
+		config: { keep: true, maxOutputTokens: 100 },
+	});
+	assert.deepEqual(setup("google-vertex").request({ config: { keep: true } }), {
+		config: { keep: true, maxOutputTokens: 100 },
+	});
+});
+
+test("omits unsupported Codex output cap without changing other payload fields", () => {
+	assert.deepEqual(setup("openai-codex-responses").request({ keep: true }), { keep: true });
+	assert.deepEqual(
+		setup("openai-codex-responses", { supportsMaxOutputTokens: true }).request({ keep: true }),
+		{ keep: true, max_output_tokens: 100 },
+	);
 });
 
 test("second truncation remains length-stopped but is explicitly incomplete", () => {

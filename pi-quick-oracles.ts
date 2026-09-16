@@ -18,10 +18,15 @@ export default function boundedTurns(pi: ExtensionAPI) {
 			stop(ctx, "Review token limits must be integers of at least 16.");
 		}
 		const payload = { ...(event.payload as Record<string, any>) };
+		const supportsMaxOutputTokens = (
+			ctx.model?.compat as { supportsMaxOutputTokens?: boolean } | undefined
+		)?.supportsMaxOutputTokens;
 		switch (ctx.model?.api) {
 			case "openai-responses":
+				if (supportsMaxOutputTokens !== false) payload.max_output_tokens = remaining;
+				break;
 			case "openai-codex-responses":
-				payload.max_output_tokens = remaining;
+				if (supportsMaxOutputTokens === true) payload.max_output_tokens = remaining;
 				break;
 			case "openai-completions":
 				payload["max_completion_tokens" in payload ? "max_completion_tokens" : "max_tokens"] = remaining;
