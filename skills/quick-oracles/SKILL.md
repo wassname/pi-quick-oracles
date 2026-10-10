@@ -1,9 +1,29 @@
 ---
 name: quick-oracles
-description: "Quick second opinions for open questions, uncertain decision branches and reviews. Uses neutral one-page briefs, independent answers and iterative clarification."
+description: "Runs iterative frontier-model consultations. Required reruns for echoed primer bias, no surprising insight or viable disagreement, and confused or unworkable answers. Finds alternate providers when credits run out."
 ---
 
 # Quick oracles
+
+## Required: detect and repair these two failures
+
+The parent must enforce these checks before accepting oracle advice. “They all agreed” is not a successful consultation. Do not act on a failed consultation as if it validated a plan or disproved a method.
+
+### 1. The primer returns your own perspective
+
+If the answers provide neither a surprising insight nor genuinely viable disagreement, the framing test has failed. Do not explain it away as consensus. It is easy to put your perspective into the primer and get it back from every model, even across model families.
+
+Re-read the actual primer against the user's goals and primary observations. Remove your preferred diagnosis, loaded descriptions, suggested answer menu and assumed constraints. Add missing observations, source excerpts and context, including evidence against your view. Ask an open question that permits different mechanisms and tractable approaches beyond your proposals. Preserve the user's real constraints; widen the perspective, not the goal. Then rerun with fresh readers who have not seen the old verdicts. Merely asking the same readers to defend their answers repeats the anchoring.
+
+Repeat until the consultation adds a substantive perspective rather than echoing the primer. Do not demand novelty or dissent for its own sake: an incoherent objection is not viable disagreement, and a surprising claim still needs checking. If budget or missing evidence blocks repair, report failed framing or an incomplete consultation, not success.
+
+### 2. A reader is confused, but the parent accepts the answer
+
+Read every answer carefully, including confident ones. Check whether it reconstructs the actual mechanism, whether its recommendation is internally coherent, and whether the proposed solution can work under the user's constraints. One confused reader is enough to require investigation; a majority vote does not resolve a misunderstanding.
+
+Quote the suspect claim and compare it with the paper, code or a small worked example. Read the primary source yourself until you can explain the relevant mechanism. For example, “J-lens is sensitivity, not prediction” does not refute a proposal using its linearized prediction of intervention effects: identify the input, target, horizon and mapping before judging the comparison. Distinguish predicting a perturbation's effect from forecasting unperturbed states or exact generated text.
+
+An objection resting on a mistaken concept is invalid evidence, not a negative result for the user's idea. Correct the concept explanation and missing context in the primer, then rerun a fresh comprehension check. Resolve other material confusion with evidence-directed follow-ups. Do not paste the desired verdict into the correction or accept an incoherent solution because a frontier model proposed it.
 
 Use the `pi-quick-oracles` agent through Nico's `subagent` tool. Consult one oracle at an uncertain branch, or use different model families for independent perspectives. Respect the user's chosen models and budget; discover available models rather than guessing names. Oracles can help during exploration, not only at final review.
 
@@ -13,11 +33,19 @@ Write a neutral one-page brief and request about one page back, roughly 500 word
 
 Do not lead the witness. Withhold your preferred answer, suspected cause and peer verdicts from initial oracles unless that hypothesis is explicitly the question being examined. Ask each oracle to reconstruct the situation in its own terms. For separate branches, supply the shared facts and each branch's question; keep the first answers independent.
 
-## Clarify and iterate
+## Iterate and record what happened
 
-Check claims against their sources. If there is confusion or missing information, quote the disputed claim, supply the relevant evidence, and request a revised assessment in a new bounded run. If the brief was leading, correct it and test a fresh oracle. Do not coach a desired conclusion.
+Enforce the two required checks above after every round. For a disputed claim, send its quote and the relevant evidence, request a revised assessment, and check the reply again. For failed framing or comprehension, repair the primer and test fresh readers. An explicit one-shot request limits the calls, not the standard of evidence; label unchecked or failed advice accordingly.
 
-Repeat until material confusion, leading framing and missing information are resolved. If evidence is unavailable or the agreed budget is exhausted, report what remains unresolved rather than claiming completion. Agreement is not the stopping criterion. Label follow-ups and peer discussion as such, not as independent evidence.
+In the existing review artifact, retain the initial claim, source/check and observed result, changed primer or actual follow-up prompt, new answer, remaining uncertainty and evidence-based stopping reason. A promised rerun is not an executed rerun. Return checked findings and their effect on the parent's decision, not a vote tally. Label follow-ups and peer discussion as such, not as independent evidence.
+
+## Provider credits are a routing problem
+
+In Pi, use `subagent({action: "models"})` to find provider-qualified alternatives. Catalog presence is not proof of usable credits or authentication; test the replacement through the same tool.
+
+On an exhausted subscription, credit limit or unavailable provider, read the exact error and discover another configured provider for the same model. Use that route within the approved budget; announce the provider change and record the failed route. Do not give up because one provider is exhausted, repeat a known credit failure, invent model IDs or obtain another project's credentials. If the exact model is unavailable, use an allowed same-family equivalent; respect an explicitly fixed model/provider or ask for a consequential substitution.
+
+Stay in the same governed tool workflow. A different provider is a fresh run: reuse the neutral brief and necessary evidence, not signed/encrypted state from another backend. Record it as a replacement, not an independent extra vote. Only report a routing blocker after checking the permitted alternatives; do not silently change model tier or expand spending.
 
 ## Budget
 
