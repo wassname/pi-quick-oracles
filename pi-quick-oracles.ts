@@ -33,6 +33,9 @@ export default function boundedTurns(pi: ExtensionAPI) {
 				break;
 			case "anthropic-messages":
 				payload.max_tokens = remaining;
+				// PI/Claude: setThinkingLevel("minimal") left Fable 5.1 thinking for the whole 2000-token answer call (no answer).
+				// The answer call is a new user turn, not a tool continuation, so thinking can be switched off there.
+				if (phase === "answer") payload.thinking = { type: "disabled" };
 				if (payload.thinking?.type === "enabled" && payload.thinking.budget_tokens >= remaining) {
 					stop(ctx, "The remaining output budget cannot contain this model's thinking budget.");
 				}

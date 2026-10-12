@@ -51,6 +51,15 @@ test("one cumulative review budget, native state unchanged, one final-answer all
 	assert.equal(s.prompts.length, 1);
 });
 
+test("anthropic final-answer call switches thinking off (PI/Claude)", () => {
+	const s = setup("anthropic-messages");
+	assert.equal(s.request({ thinking: { type: "adaptive" } }).thinking.type, "adaptive");
+	s.turn(s.message(100, "length"));
+	const answer = s.request({ thinking: { type: "adaptive" } });
+	assert.deepEqual(answer.thinking, { type: "disabled" });
+	assert.equal(answer.max_tokens, 50);
+});
+
 test("uses each provider's supported output-token field", () => {
 	assert.deepEqual(setup("openai-responses").request({ keep: true }), { keep: true, max_output_tokens: 100 });
 	assert.deepEqual(
