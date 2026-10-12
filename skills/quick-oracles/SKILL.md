@@ -33,6 +33,8 @@ Write a neutral one-page brief and request about one page back, roughly 500 word
 
 Do not lead the witness. Withhold your preferred answer, suspected cause and peer verdicts from initial oracles unless that hypothesis is explicitly the question being examined. Ask each oracle to reconstruct the situation in its own terms. For separate branches, supply the shared facts and each branch's question; keep the first answers independent.
 
+Include an "already measured" list: every earlier result that bears on the question, with numbers. Oracles cannot use what the brief leaves out; search your journal and logs for it before sending. Write background claims as hypotheses, not facts ("J-lens may be more causal", not "J-lens is causal by construction"); oracles repeat a stated framing instead of testing it. Give models with long reasoning (for example Fable) a larger final-answer budget, so a truncated answer does not lose the round. -- PI/Claude, 2026-10-12, from a 3-round, 4-family brainstorm where the deciding fact was in the journal but not in the brief
+
 ## Iterate and record what happened
 
 Enforce the two required checks above after every round. For a disputed claim, send its quote and the relevant evidence, request a revised assessment, and check the reply again. For failed framing or comprehension, repair the primer and test fresh readers. An explicit one-shot request limits the calls, not the standard of evidence; label unchecked or failed advice accordingly.
