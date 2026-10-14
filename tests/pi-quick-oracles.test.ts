@@ -51,13 +51,22 @@ test("one cumulative review budget, native state unchanged, one final-answer all
 	assert.equal(s.prompts.length, 1);
 });
 
-test("anthropic final-answer call switches thinking off (PI/Claude)", () => {
+test("anthropic finalization preserves adaptive thinking and provider effort", () => {
 	const s = setup("anthropic-messages");
 	assert.equal(s.request({ thinking: { type: "adaptive" } }).thinking.type, "adaptive");
 	s.turn(s.message(100, "length"));
-	const answer = s.request({ thinking: { type: "adaptive" } });
-	assert.deepEqual(answer.thinking, { type: "disabled" });
-	assert.equal(answer.max_tokens, 50);
+	const payload = { thinking: { type: "adaptive" }, output_config: { effort: "low" } };
+	const original = structuredClone(payload);
+	assert.deepEqual(s.request(payload), { ...original, max_tokens: 50 });
+	assert.deepEqual(payload, original);
+	assert.equal(s.thinking, "minimal");
+});
+
+test("anthropic finalization retains explicit-budget validation", () => {
+	const s = setup("anthropic-messages");
+	s.turn(s.message(100, "length"));
+	assert.throws(() => s.request({ thinking: { type: "enabled", budget_tokens: 50 } }), /thinking budget/);
+	assert.equal(s.aborts, 1);
 });
 
 test("uses each provider's supported output-token field", () => {
