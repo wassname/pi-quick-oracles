@@ -35,7 +35,10 @@ export default function boundedTurns(pi: ExtensionAPI) {
 				payload.max_tokens = remaining;
 				// PI/OpenAI: preserve Pi's minimal-thinking payload; adaptive-only endpoints reject disabled thinking.
 				if (payload.thinking?.type === "enabled" && payload.thinking.budget_tokens >= remaining) {
-					stop(ctx, "The remaining output budget cannot contain this model's thinking budget.");
+					// PI/Claude-opus-5-5: shrink the thinking budget to half the remaining output (Anthropic minimum 1024) instead of aborting;
+					// Fireworks Qwen reserved more thinking than the review had left and every final answer was refused (2026-10-17).
+					if (remaining < 2048) stop(ctx, "The remaining output budget cannot contain this model's thinking budget.");
+					payload.thinking = { ...payload.thinking, budget_tokens: Math.max(1024, Math.floor(remaining / 2)) };
 				}
 				break;
 			case "google-generative-ai":
