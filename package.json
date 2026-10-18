@@ -6,10 +6,18 @@
   "license": "MIT",
   "repository": "github:wassname/pi-quick-oracles",
   "keywords": ["pi-package", "oracle", "subagents"],
-  "files": ["pi-quick-oracles.ts", "agents", "skills", "tests"],
+  "files": ["pi-quick-oracles.ts", "agents", "skills"],
+  "publishConfig": { "access": "public" },
   "scripts": { "test": "node --test tests/pi-quick-oracles.test.ts" },
   "engines": { "node": ">=22.18.0" },
-  "peerDependencies": { "@earendil-works/pi-coding-agent": ">=0.85.1 <1.0.0" },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "pi-subagents": ">=0.66.0"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": { "optional": true },
+    "pi-subagents": { "optional": true }
+  },
   "pi": { "extensions": [], "skills": ["skills"] },
   "pi-subagents": { "agents": ["agents"] }
 }
