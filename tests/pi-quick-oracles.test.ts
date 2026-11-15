@@ -60,6 +60,19 @@ test("anthropic final-answer call switches thinking off (PI/Claude)", () => {
 	assert.equal(answer.max_tokens, 50);
 });
 
+test("managed-effort anthropic models keep adaptive thinking at low effort in the answer call (PI/Claude)", () => {
+	const s = setup("anthropic-messages");
+	const managed = () => ({ thinking: { type: "adaptive", block_binding: { prefix_mismatch_behavior: "drop_block" } },
+		output_config: { effort: "low" },
+		messages: [{ role: "user" }, { role: "system", content: [], output_config: { effort: "high" } }] });
+	s.turn(s.message(100, "length"));
+	const answer = s.request(managed());
+	assert.equal(answer.thinking.type, "adaptive");
+	assert.equal(answer.output_config.effort, "low");
+	assert.equal(answer.messages[1].output_config.effort, "low");
+	assert.equal(answer.max_tokens, 50);
+});
+
 test("uses each provider's supported output-token field", () => {
 	assert.deepEqual(setup("openai-responses").request({ keep: true }), { keep: true, max_output_tokens: 100 });
 	assert.deepEqual(
