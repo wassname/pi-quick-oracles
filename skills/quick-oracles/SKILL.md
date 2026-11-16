@@ -12,8 +12,16 @@ are faults of the brief, not of the oracles.
 > If the models have uniform opinions the setup failed to brainstorm. If they misunderstand it
 > failed to inform. -- wassname, 2026-11-16 (spelling corrected)
 
+> We are searching for a new perspective or concepts or insights. Not more of the same or clinging
+> to existing ideas. -- wassname, 2026-11-16
+
 Do not report that oracles agree. Agreement between readers of one brief measures the brief.
 Agreement with the user's stated view is the usual result of a brief that contains that view.
+
+What counts as new: a different mechanism, a different way to state the problem, a concept from
+another field, or an observation that the current explanation does not predict. What does not
+count: a restatement of the brief, or a refinement of the current approach (another setting of the
+same method, one more control, a larger sample).
 
 ## What to do
 
@@ -44,7 +52,12 @@ One page, about 500 words. Request about one page back. Attach source excerpts a
    preferences): mark them as claims under test, and ask for the strongest case against each.
 8. Ask the oracle to restate the problem in its own words before it answers. COMPREHENSION reads
    that restatement.
-9. Name the files to read. Tell the oracle not to explore beyond them: an oracle that spends its
+9. Ask for other ways to see the problem, not for improvements to the current approach: "What
+   would explain these observations if our explanation is wrong?", "How would a different field
+   state this problem?", "Which question should we ask instead?". With several oracles, give each
+   a different position to argue from (for example: a sceptic of the method, a specialist of
+   another field, a reader who assumes a bug).
+10. Name the files to read. Tell the oracle not to explore beyond them: an oracle that spends its
    token budget on reading returns no answer.
 
 | leading | neutral |
@@ -54,15 +67,21 @@ One page, about 500 words. Request about one page back. Attach source excerpts a
 
 ### ECHO: did the brief fail to brainstorm?
 
-List the main claims of each answer. Mark each claim that the brief already contained. The round
-failed if no answer has a claim that is absent from the brief, and no answer disagrees with
-another answer or with you in a way that could be true.
+List the main claims of each answer. Classify each one: restatement (the brief contained it),
+refinement (an adjustment of the current approach), or new perspective (a different mechanism,
+framing, concept or unpredicted observation). The round failed if no answer has a new perspective,
+and no answer disagrees with another answer or with you in a way that could be true. A round that
+returns only refinements failed.
 
 A failed round is not consensus. Using several model families does not prevent it: all of them
 read the same brief.
 
 Do not demand novelty or dissent for its own sake. An incoherent objection is not a viable
 disagreement.
+
+Your own attachment to the current idea is the second cause of an echo. State each new
+perspective in its strongest form before you judge it. Do not answer it with the reasons why the
+current plan was chosen; check it (VERIFY).
 
 ### COMPREHENSION: did the brief fail to inform?
 
@@ -113,7 +132,8 @@ quick-oracles: <n> rounds
 round 1  <model A>, <model B>; brief: <path>
          BRIEF          my view in the brief: "<quote>" | withheld
                         user's views in the reading: marked as claims under test | not present
-         ECHO           new to me: <oracle> "<claim that the brief did not contain>" | none
+         ECHO           new perspective: <oracle> "<a different mechanism, framing or concept>" | none
+                        refinements only: "<adjustment of the current approach>" | none
                         disagreement: <A> "<quote>" against <B or me> "<quote>" | none
                         passed | FAILED TO BRAINSTORM
          COMPREHENSION  <oracle> restated the problem as "<quote>": correct | wrong: <what>, per <file:line>
@@ -127,8 +147,8 @@ DECISION <what changes in the plan, and which checked claim caused it> | nothing
 
 - One `round` entry for every round that ran, including a failed one. Do not merge rounds, and do
   not report only the last one.
-- Write `none` where it is true. `new to me: none` with `disagreement: none` is a failed round;
-  report it as one.
+- Write `none` where it is true. `new perspective: none` with `disagreement: none` is a failed
+  round, also when there are refinements; report it as one.
 - A single round with a failed check and no repair is reported as a failed consultation, with the
   reason that the repair was not done.
 - Do not write "the oracles agree", "consensus", "independently confirmed" or "3 of 4 oracles".
@@ -143,7 +163,8 @@ Example of a failed first round and its repair:
 quick-oracles: 2 rounds
 round 1  gpt-6-astra, kimi-k3; brief: slop/briefs/20261116_why_small_gain.md
          BRIEF          my view in the brief: "the gain is small because the labels are few" (not withheld)
-         ECHO           new to me: none
+         ECHO           new perspective: none
+                        refinements only: "use more direction sets", "train for longer"
                         disagreement: none
                         FAILED TO BRAINSTORM
          COMPREHENSION  astra restated the problem as "a lens fitted to predict later states": wrong:
@@ -151,10 +172,12 @@ round 1  gpt-6-astra, kimi-k3; brief: slop/briefs/20261116_why_small_gain.md
                         FAILED TO INFORM
          VERIFY         not checked
          REPAIR         for round 2: removed my diagnosis and the two options; added the label formula
-                        and the table of earlier results; fresh readers glm-5.3, muse-spark-1.3
+                        and the table of earlier results; asked "what would explain this if our
+                        explanation is wrong?"; fresh readers glm-5.3 (sceptic), muse-spark-1.3 (control theory)
 round 2  glm-5.3, muse-spark-1.3; brief: slop/briefs/20261116_why_small_gain_v2.md
          BRIEF          my view in the brief: withheld
-         ECHO           new to me: glm "the dose is chosen on 2 items, so the comparison is dominated by dose noise"
+         ECHO           new perspective: glm "the dose is chosen on 2 items, so the comparison is dominated by dose noise"
+                        refinements only: none
                         disagreement: muse "the evaluation is too small to rank methods" against glm "the fit is the limit"
                         passed
          COMPREHENSION  both restatements correct
